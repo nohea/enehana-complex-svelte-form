@@ -3,6 +3,8 @@
 source code accompanying the tech blog post at:
 http://enehana.nohea.com
 
+http://enehana.nohea.com/general/svelte-complex-forms-with-radio-buttons-dynamic-arrays-and-validation-svelte-forms-lib-and-yup/
+
 # overview 
 
 Building new web apps in 2021 using a Svelte front-end is fun, with more reactivity and less code. Almost any web app will have some kind of form, and it helps to have a basic form builder and validation framework.
