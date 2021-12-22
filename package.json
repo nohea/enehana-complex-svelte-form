@@ -18,6 +18,7 @@
   },
   "type": "module",
   "dependencies": {
-    "svelte-forms-lib": "^2.0.0"
+    "svelte-forms-lib": "^2.0.0",
+    "yup": "^0.32.11"
   }
 }
