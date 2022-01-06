@@ -1,5 +1,7 @@
 <script>
 	import ZInput from '$lib/c/ZInput.svelte';
+	import ZRadio from '$lib/c/ZRadio.svelte';
+	import { onMount } from 'svelte';
 	import { createForm } from 'svelte-forms-lib';
 	import * as yup from 'yup';
 
@@ -55,15 +57,44 @@
 		$errors.contacts = $errors.contacts.filter((u, j) => j !== i);
 	};
 
-	const prefixOptions = ['Ms.', 'Mr.', 'Dr.'];
-	const genderOptions = ['F', 'M', 'X'];
-	const contactTypes = ['friend', 'family', 'aquaintence'];
+	let prefixOptions = ['Ms.', 'Mr.', 'Dr.'];
+	let genderOptions = ['F', 'M', 'X'];
+	let contactTypes = ['friend', 'family', 'aquaintence'];
 
-	const products = [
+	let products = [
 		{ product_id: 101, product_name: 'Boots' },
 		{ product_id: 202, product_name: 'Shoes' },
 		{ product_id: 333, product_name: 'Jeans' }
 	];
+
+	onMount(() => {
+		// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map#using_map_to_reformat_objects_in_an_array
+
+		prefixOptions = simpleRemap(prefixOptions);
+		genderOptions = simpleRemap(genderOptions);
+		contactTypes = simpleRemap(contactTypes);
+
+		products = products.map((element) => {
+			return {
+				id: element.product_id,
+				name: element.product_name,
+				label: element.product_name,
+				value: element.product_id,
+			};
+		});
+	});
+
+	function simpleRemap(itemList) {
+		return itemList.map(element => {
+			return {
+				id: element,
+				name: element,
+				label: element,
+				value: element,
+			};
+		});
+	}
+
 </script>
 
 <main>
@@ -72,25 +103,13 @@
 
 		<h3>Test Form</h3>
 		<form on:submit={handleSubmit}>
-			<div>
-				<label for="prefix"> Prefix </label>
-				{#each prefixOptions as pre, i}
-					<label class="compact">
-						<input
-							id={`prefix-${pre}`}
-							name="prefix"
-							value={pre}
-							type="radio"
-							on:change={handleChange}
-							on:blur={handleChange}
-						/>
-						<span> {pre} </span>
-					</label>
-				{/each}
-				{#if $errors.prefix}
-					<div class="error-text">{$errors.prefix}</div>
-				{/if}
-			</div>
+			<ZRadio
+				nameAttr="prefix"
+				nameLabel="Prefix"
+				itemList={prefixOptions}
+				itemValueChecked="n/a"
+				errorText={$errors?.prefix}
+				{handleChange}></ZRadio>
 
 			<ZInput
 				nameAttr="fullname"
@@ -108,25 +127,13 @@
 				{handleChange}
 			/>
 
-			<div>
-				<label for="profile.gender"> Profile Gender</label>
-				{#each genderOptions as g, i}
-					<label class="compact">
-						<input
-							id={`prefix-${g}`}
-							name="profile.gender"
-							value={g}
-							type="radio"
-							on:change={handleChange}
-							on:blur={handleChange}
-						/>
-						<span> {g} </span>
-					</label>
-				{/each}
-				{#if $errors.profile?.gender}
-					<div class="error-text">{$errors.profile.gender}</div>
-				{/if}
-			</div>
+			<ZRadio
+				nameAttr="profile.gender"
+				nameLabel="Profile Gender"
+				itemList={genderOptions}
+				itemValueChecked="n/a"
+				errorText={$errors.profile?.gender}
+				{handleChange}></ZRadio>
 
 			<h4>Contacts</h4>
 			{#each $form.contacts as contact, j}
@@ -147,45 +154,21 @@
 						{handleChange}
 					/>
 
-					<div>
-						<label for={`contacts[${j}].contacttype`}>Contact Type</label>
-						{#each contactTypes as ct, i}
-							<label class="compact">
-								<input
-									type="radio"
-									id={`contacts[${j}].contacttype-${ct}`}
-									name={`contacts[${j}].contacttype`}
-									value={ct}
-									on:change={handleChange}
-									on:blur={handleChange}
-								/>
-								<span> {ct} </span>
-							</label>
-						{/each}
-						{#if $errors.contacts[j]?.contacttype}
-							<div class="error-text">{$errors.contacts[j].contacttype}</div>
-						{/if}
-					</div>
+					<ZRadio
+						nameAttr={`contacts[${j}].contacttype`}
+						nameLabel="Contact Type"
+						itemList={contactTypes}
+						itemValueChecked="n/a"
+						errorText={$errors.contacts[j]?.contacttype}
+						{handleChange}></ZRadio>
 
-					<div>
-						<label for={`contacts[${j}].product_id`}>Product</label>
-						{#each products as p, i}
-							<label class="compact">
-								<input
-									type="radio"
-									id={`contacts[${j}].product_id-${p.product_id}`}
-									name={`contacts[${j}].product_id`}
-									value={p.product_id}
-									on:change={handleChange}
-									on:blur={handleChange}
-								/>
-								<span> {p.product_name} [{p.product_id}]</span>
-							</label>
-						{/each}
-						{#if $errors.contacts[j]?.product_id}
-							<div class="error-text">{$errors.contacts[j].product_id}</div>
-						{/if}
-					</div>
+					<ZRadio
+						nameAttr={`contacts[${j}].product_id`}
+						nameLabel="Product"
+						itemList={products}
+						itemValueChecked="n/a"
+						errorText={$errors.contacts[j]?.product_id}
+						{handleChange}></ZRadio>
 
 					{#if $form.contacts.length === j + 1}
 						<button type="button" on:click={removecontact(j)}>[- remove last contact]</button>
@@ -216,11 +199,11 @@
 </main>
 
 <style>
-	label {
+	:global(label) {
 		display: inline-block;
 		width: 200px;
 	}
-	label.compact {
+	:global(label.compact) {
 		width: max-content;
 	}
 	.form-group {
