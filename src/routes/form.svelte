@@ -1,4 +1,5 @@
 <script>
+	import ZInput from '$lib/c/ZInput.svelte';
 	import { createForm } from 'svelte-forms-lib';
 	import * as yup from 'yup';
 
@@ -40,8 +41,13 @@
 
 	const addcontact = () => {
 		console.log('addcontact()');
-		$form.contacts = $form.contacts.concat({ name: '', email: '', contacttype: '', product_id: 0, });
-		$errors.contacts = $errors.contacts.concat({ name: '', email: '', contacttype: '', product_id: 0, });
+		$form.contacts = $form.contacts.concat({ name: '', email: '', contacttype: '', product_id: 0 });
+		$errors.contacts = $errors.contacts.concat({
+			name: '',
+			email: '',
+			contacttype: '',
+			product_id: 0
+		});
 	};
 
 	const removecontact = (i) => () => {
@@ -62,152 +68,126 @@
 
 <main>
 	<div>
-		<h1>Complex Svelte Form Example</h1>
+		<h1>Complex Svelte Form Example, Part 2</h1>
 
 		<h3>Test Form</h3>
 		<form on:submit={handleSubmit}>
 			<div>
 				<label for="prefix"> Prefix </label>
-                {#each prefixOptions as pre, i}
-                    <label class="compact">
-                        <input id={`prefix-${pre}`} 
-                        name="prefix" 
-                        value={pre}
-                        type="radio" 
-                        on:change={handleChange}
-                        on:blur={handleChange}
-                        />
-                    <span> {pre} </span>
-                    </label>
-                {/each}
+				{#each prefixOptions as pre, i}
+					<label class="compact">
+						<input
+							id={`prefix-${pre}`}
+							name="prefix"
+							value={pre}
+							type="radio"
+							on:change={handleChange}
+							on:blur={handleChange}
+						/>
+						<span> {pre} </span>
+					</label>
+				{/each}
 				{#if $errors.prefix}
 					<div class="error-text">{$errors.prefix}</div>
 				{/if}
 			</div>
 
-			<div>
-				<label for="fullname"> Full Name </label>
-				<input
-					type="text"
-					name="fullname"
-					bind:value={$form.fullname}
-					class=""
-					placeholder="Full Name"
-					on:change={handleChange}
-					on:blur={handleChange}
-				/>
-				{#if $errors.fullname}
-					<div class="error-text">{$errors.fullname}</div>
-				{/if}
-			</div>
+			<ZInput
+				nameAttr="fullname"
+				nameLabel="Full Name"
+				bindValue={$form.fullname}
+				errorText={$errors?.fullname}
+				{handleChange}
+			/>
+
+			<ZInput
+				nameAttr="profile.address"
+				nameLabel="Profile Address"
+				bindValue={$form.profile.address}
+				errorText={$errors.profile?.address}
+				{handleChange}
+			/>
 
 			<div>
-				<label for="profile.address">Profile Address </label>
-				<input
-					type="text"
-					name="profile.address"
-					bind:value={$form.profile.address}
-					class=""
-					placeholder="Profile Address"
-					on:change={handleChange}
-					on:blur={handleChange}
-				/>
-				{#if $errors.profile?.address}
-					<div class="error-text">{$errors.profile.address}</div>
+				<label for="profile.gender"> Profile Gender</label>
+				{#each genderOptions as g, i}
+					<label class="compact">
+						<input
+							id={`prefix-${g}`}
+							name="profile.gender"
+							value={g}
+							type="radio"
+							on:change={handleChange}
+							on:blur={handleChange}
+						/>
+						<span> {g} </span>
+					</label>
+				{/each}
+				{#if $errors.profile?.gender}
+					<div class="error-text">{$errors.profile.gender}</div>
 				{/if}
 			</div>
-            <div>
-                <label for="profile.gender"> Profile Gender</label>
-                {#each genderOptions as g, i}
-                    <label class="compact">
-                        <input id={`prefix-${g}`} 
-                        name="profile.gender" 
-                        value={g}
-                        type="radio" 
-                        on:change={handleChange}
-                        on:blur={handleChange}
-                        />
-                    <span> {g} </span>
-                    </label>
-                {/each}
-                {#if $errors.profile?.gender}
-                    <div class="error-text">{$errors.profile.gender}</div>
-                {/if}
-            </div>
 
 			<h4>Contacts</h4>
 			{#each $form.contacts as contact, j}
 				<div class="form-group">
-					<div>
-						<label for={`contacts[${j}].name`}>Name</label>
-						<input
-							name={`contacts[${j}].name`}
-							placeholder="name"
-							on:change={handleChange}
-							on:blur={handleChange}
-							bind:value={$form.contacts[j].name}
-						/>
+					<ZInput
+						nameAttr={`contacts[${j}].name`}
+						nameLabel="Name"
+						bindValue={$form.contacts[j].name}
+						errorText={$errors?.contacts[j]?.name}
+						{handleChange}
+					/>
 
-						{#if $errors?.contacts[j]?.name}
-							<div class="error-text">{$errors.contacts[j].name}</div>
+					<ZInput
+						nameAttr={`contacts[${j}].email`}
+						nameLabel="Email"
+						bindValue={$form.contacts[j].email}
+						errorText={$errors?.contacts[j]?.email}
+						{handleChange}
+					/>
+
+					<div>
+						<label for={`contacts[${j}].contacttype`}>Contact Type</label>
+						{#each contactTypes as ct, i}
+							<label class="compact">
+								<input
+									type="radio"
+									id={`contacts[${j}].contacttype-${ct}`}
+									name={`contacts[${j}].contacttype`}
+									value={ct}
+									on:change={handleChange}
+									on:blur={handleChange}
+								/>
+								<span> {ct} </span>
+							</label>
+						{/each}
+						{#if $errors.contacts[j]?.contacttype}
+							<div class="error-text">{$errors.contacts[j].contacttype}</div>
 						{/if}
 					</div>
 
 					<div>
-						<label for={`contacts[${j}].email`}>Email</label>
-						<input
-							placeholder="email"
-							name={`contacts[${j}].email`}
-							on:change={handleChange}
-							on:blur={handleChange}
-							bind:value={$form.contacts[j].email}
-						/>
-						{#if $errors?.contacts[j]?.email}
-							<div class="error-text">{$errors.contacts[j].email}</div>
+						<label for={`contacts[${j}].product_id`}>Product</label>
+						{#each products as p, i}
+							<label class="compact">
+								<input
+									type="radio"
+									id={`contacts[${j}].product_id-${p.product_id}`}
+									name={`contacts[${j}].product_id`}
+									value={p.product_id}
+									on:change={handleChange}
+									on:blur={handleChange}
+								/>
+								<span> {p.product_name} [{p.product_id}]</span>
+							</label>
+						{/each}
+						{#if $errors.contacts[j]?.product_id}
+							<div class="error-text">{$errors.contacts[j].product_id}</div>
 						{/if}
 					</div>
 
-                    <div>
-                        <label for={`contacts[${j}].contacttype`}>Contact Type</label>
-                        {#each contactTypes as ct, i}
-                            <label class="compact">
-                                <input 
-                                type="radio" 
-                                id={`contacts[${j}].contacttype-${ct}`} 
-                                name={`contacts[${j}].contacttype`}
-                                value={ct}
-                                on:change={handleChange}
-                                on:blur={handleChange}
-                                />
-                            <span> {ct} </span>
-                            </label>
-                        {/each}
-                        {#if $errors.contacts[j]?.contacttype}
-                            <div class="error-text">{$errors.contacts[j].contacttype}</div>
-                        {/if}
-                    </div>
-
-                    <div>
-                        <label for={`contacts[${j}].product_id`}>Product</label>
-                        {#each products as p, i}
-                            <label class="compact">
-                                <input 
-                                type="radio" 
-                                id={`contacts[${j}].product_id-${p.product_id}`} 
-                                name={`contacts[${j}].product_id`}
-                                value={p.product_id}
-                                on:change={handleChange}
-                                on:blur={handleChange}
-                                />
-                            <span> {p.product_name} [{p.product_id}]</span>
-                            </label>
-                        {/each}
-                        {#if $errors.contacts[j]?.product_id}
-                            <div class="error-text">{$errors.contacts[j].product_id}</div>
-                        {/if}
-                    </div>
-
-                    {#if $form.contacts.length === j + 1}
+					{#if $form.contacts.length === j + 1}
 						<button type="button" on:click={removecontact(j)}>[- remove last contact]</button>
 					{/if}
 				</div>
@@ -240,18 +220,18 @@
 		display: inline-block;
 		width: 200px;
 	}
-    label.compact {
+	label.compact {
 		width: max-content;
-    }
-    .form-group {
+	}
+	.form-group {
 		display: block;
-        border-style: solid;
-        border-width: 2px;
-        border-color: gray;
+		border-style: solid;
+		border-width: 2px;
+		border-color: gray;
 		width: max-content;
-        margin: 4px;
-    }
-	.error-text {
+		margin: 4px;
+	}
+	:global(.error-text) {
 		color: red;
 	}
 </style>
