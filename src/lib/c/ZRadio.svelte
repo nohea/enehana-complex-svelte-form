@@ -2,8 +2,8 @@
     import { getScopedObj } from "$lib/util";
     import { getContext } from "svelte";
     import { key } from "svelte-forms-lib";
-    export let nameAttr;
-    export let nameLabel;
+    export let name;
+    export let label;
     export let itemList;
     export let itemValueChecked;
     // allows the Form* components to share state with the parent form
@@ -14,22 +14,23 @@
     }
 </script>
 <div>
-    <label for={nameAttr}>{nameLabel}</label>
+    <label for={name}>{label}</label>
     {#each itemList as p, i}
         <label class="compact">
             <input
                 type="radio"
-                id={`${nameAttr}-${p.value}`}
-                name={nameAttr}
+                id={`${name}-${p.value}`}
+                name={name}
                 value={p.value}
                 on:change={handleChange}
                 on:blur={handleChange}
                 checked={isChecked(itemValueChecked, p.value)}
-            />
+                {...$$props}
+                />
             <span> {p.label}{#if p.label != p.id}[{p.id}]{/if}</span>
         </label>
     {/each}
-    {#if getScopedObj($errors, nameAttr)}
-        <div class="form-error">{getScopedObj($errors, nameAttr)}</div>
+    {#if getScopedObj($errors, name)}
+        <div class="form-error">{getScopedObj($errors, name)}</div>
     {/if}
 </div>

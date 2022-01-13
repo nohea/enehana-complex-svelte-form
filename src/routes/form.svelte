@@ -113,27 +113,27 @@
 		<h3>Test Form</h3>
 		<form on:submit={handleSubmit}>
 			<ZRadio
-				nameAttr="prefix"
-				nameLabel="Prefix"
+				name="prefix"
+				label="Prefix"
 				itemList={prefixOptions}
 				itemValueChecked="n/a"
 				/>
 
 			<ZInput
-				nameAttr="fullname"
-				nameLabel="Full Name"
+				name="fullname"
+				label="Full Name"
 				bindValue={$form.fullname}
 				/>
 
 			<ZInput
-				nameAttr="profile.address"
-				nameLabel="Profile Address"
+				name="profile.address"
+				label="Profile Address"
 				bindValue={$form.profile.address}
 				/>
 
 			<ZRadio
-				nameAttr="profile.gender"
-				nameLabel="Profile Gender"
+				name="profile.gender"
+				label="Profile Gender"
 				itemList={genderOptions}
 				itemValueChecked="n/a"
 				/>
@@ -142,27 +142,27 @@
 			{#each $form.contacts as contact, j}
 				<div class="form-group">
 					<ZInput
-						nameAttr={`contacts[${j}].name`}
-						nameLabel="Name"
+						name={`contacts[${j}].name`}
+						label="Name"
 						bindValue={$form.contacts[j].name}
 						/>
 
 					<ZInput
-						nameAttr={`contacts[${j}].email`}
-						nameLabel="Email"
+						name={`contacts[${j}].email`}
+						label="Email"
 						bindValue={$form.contacts[j].email}
 						/>
 
 					<ZRadio
-						nameAttr={`contacts[${j}].contacttype`}
-						nameLabel="Contact Type"
+						name={`contacts[${j}].contacttype`}
+						label="Contact Type"
 						itemList={contactTypes}
 						itemValueChecked="n/a"
 						/>
 
 					<ZRadio
-						nameAttr={`contacts[${j}].product_id`}
-						nameLabel="Product"
+						name={`contacts[${j}].product_id`}
+						label="Product"
 						itemList={products}
 						itemValueChecked="n/a"
 						/>
