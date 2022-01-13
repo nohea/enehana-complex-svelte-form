@@ -20,3 +20,7 @@ http://enehana.nohea.com/general/svelte-complex-forms-with-radio-buttons-dynamic
 
 Svelte Complex Forms, part 2 – refactoring into custom components
 http://enehana.nohea.com/general/svelte-complex-forms-part-2-refactoring-into-custom-components/
+
+# Part 3
+Svelte Complex Forms, part 3 – components using get/setContext() for less passing props
+http://enehana.nohea.com/general/svelte-complex-forms-part-3-components-using-get-setcontext-for-less-passing-props/
