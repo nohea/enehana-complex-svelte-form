@@ -1,8 +1,8 @@
 <script>
 	import ZInput from '$lib/c/ZInput.svelte';
 	import ZRadio from '$lib/c/ZRadio.svelte';
-	import { onMount } from 'svelte';
-	import { createForm } from 'svelte-forms-lib';
+	import { onMount, setContext } from 'svelte';
+	import { createForm, key } from 'svelte-forms-lib';
 	import * as yup from 'yup';
 
 	const validator = yup.object().shape({
@@ -40,6 +40,15 @@
 	};
 
 	const { form, errors, state, handleChange, handleSubmit, handleReset } = createForm(formProps);
+
+	// allows for referencing the internal $form and $errors from this page, 
+	// so we can add the array handlers
+	setContext(key, {
+		form,
+		errors,
+		handleChange,
+		handleSubmit,
+	});
 
 	const addcontact = () => {
 		console.log('addcontact()');
@@ -108,32 +117,26 @@
 				nameLabel="Prefix"
 				itemList={prefixOptions}
 				itemValueChecked="n/a"
-				errorText={$errors?.prefix}
-				{handleChange}></ZRadio>
+				/>
 
 			<ZInput
 				nameAttr="fullname"
 				nameLabel="Full Name"
 				bindValue={$form.fullname}
-				errorText={$errors?.fullname}
-				{handleChange}
-			/>
+				/>
 
 			<ZInput
 				nameAttr="profile.address"
 				nameLabel="Profile Address"
 				bindValue={$form.profile.address}
-				errorText={$errors.profile?.address}
-				{handleChange}
-			/>
+				/>
 
 			<ZRadio
 				nameAttr="profile.gender"
 				nameLabel="Profile Gender"
 				itemList={genderOptions}
 				itemValueChecked="n/a"
-				errorText={$errors.profile?.gender}
-				{handleChange}></ZRadio>
+				/>
 
 			<h4>Contacts</h4>
 			{#each $form.contacts as contact, j}
@@ -142,33 +145,27 @@
 						nameAttr={`contacts[${j}].name`}
 						nameLabel="Name"
 						bindValue={$form.contacts[j].name}
-						errorText={$errors?.contacts[j]?.name}
-						{handleChange}
-					/>
+						/>
 
 					<ZInput
 						nameAttr={`contacts[${j}].email`}
 						nameLabel="Email"
 						bindValue={$form.contacts[j].email}
-						errorText={$errors?.contacts[j]?.email}
-						{handleChange}
-					/>
+						/>
 
 					<ZRadio
 						nameAttr={`contacts[${j}].contacttype`}
 						nameLabel="Contact Type"
 						itemList={contactTypes}
 						itemValueChecked="n/a"
-						errorText={$errors.contacts[j]?.contacttype}
-						{handleChange}></ZRadio>
+						/>
 
 					<ZRadio
 						nameAttr={`contacts[${j}].product_id`}
 						nameLabel="Product"
 						itemList={products}
 						itemValueChecked="n/a"
-						errorText={$errors.contacts[j]?.product_id}
-						{handleChange}></ZRadio>
+						/>
 
 					{#if $form.contacts.length === j + 1}
 						<button type="button" on:click={removecontact(j)}>[- remove last contact]</button>
@@ -214,7 +211,7 @@
 		width: max-content;
 		margin: 4px;
 	}
-	:global(.error-text) {
+	:global(.form-error) {
 		color: red;
 	}
 </style>

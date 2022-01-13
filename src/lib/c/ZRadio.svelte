@@ -1,18 +1,16 @@
 <script>
+    import { getScopedObj } from "$lib/util";
+    import { getContext } from "svelte";
+    import { key } from "svelte-forms-lib";
     export let nameAttr;
     export let nameLabel;
     export let itemList;
     export let itemValueChecked;
-    export let errorText;
-    export let handleChange;
+    // allows the Form* components to share state with the parent form
+    const { form, errors, handleChange } = getContext(key);
 
     function isChecked(checkedValue, itemValue) {
-        if(checkedValue === itemValue) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return checkedValue === itemValue ? true : false;
     }
 </script>
 <div>
@@ -31,7 +29,7 @@
             <span> {p.label}{#if p.label != p.id}[{p.id}]{/if}</span>
         </label>
     {/each}
-    {#if errorText}
-        <div class="error-text">{errorText}</div>
+    {#if getScopedObj($errors, nameAttr)}
+        <div class="form-error">{getScopedObj($errors, nameAttr)}</div>
     {/if}
 </div>

@@ -1,9 +1,12 @@
 <script>
+    import { getScopedObj } from "$lib/util";
+    import { getContext } from "svelte";
+    import { key } from "svelte-forms-lib";
     export let nameAttr;
     export let nameLabel;
     export let bindValue;
-    export let errorText;
-    export let handleChange;
+    // allows the Form* components to share state with the parent form
+    const { form, errors, handleChange } = getContext(key);
 </script>
 <div>
     <label for={nameAttr}>{nameLabel}</label>
@@ -14,7 +17,7 @@
         on:blur={handleChange}
         bind:value={bindValue}
     />
-    {#if errorText}
-        <div class="error-text">{errorText}</div>
+    {#if getScopedObj($errors, nameAttr)}
+        <div class="form-error">{getScopedObj($errors, nameAttr)}</div>
     {/if}
 </div>
